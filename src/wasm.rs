@@ -1,10 +1,9 @@
-use std::borrow::BorrowMut;
 use wasm_bindgen::prelude::*;
 use crate::minesweeper::{Cell, Minesweeper};
 use std::cell::RefCell;
 
 thread_local! {
-    static MINESWEEPER: RefCell<Minesweeper> = RefCell::new(Minesweeper::new(10, 10, 15))
+    static MINESWEEPER: RefCell<Minesweeper> = RefCell::new(Minesweeper::new(10, 10, 8))
 }
 
 #[wasm_bindgen(js_name = getWidth)]

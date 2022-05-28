@@ -87,7 +87,12 @@
                 } else if (cell === 30) {
                     element.innerText = "💣 "
                 } else {
-                    element.innerText = (cell - 20).toString()
+                    const minesCount = cell - 20
+                    if (minesCount === 0) {
+                        element.innerText = "⬜ "
+                    } else {
+                        element.innerText = (cell - 20).toString()
+                    }
                 }
             }
         }

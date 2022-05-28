@@ -65,10 +65,23 @@ impl Minesweeper {
                     _ => {}
                 }
             }
-            true // todo reveal
+            true
         } else {
             let mines_count = self.find_neighbors_mines_count(position);
             self.cells[idx] = Cell::Open(mines_count);
+            if mines_count == 0 {
+                // fixme: collect because cannot borrow twice?
+                let neighbors: Vec<Position> = self.find_neighbors(position).collect();
+                for neighbor in neighbors {
+                    let idx = self.get_index(&neighbor);
+                    match self.cells[idx] {
+                        Cell::Closed(_) => {
+                            self.open(neighbor);
+                        },
+                        _ => {},
+                    };
+                };
+            }
             false
         };
     }
@@ -76,7 +89,7 @@ impl Minesweeper {
     fn init_cells(width: usize, height: usize, mines_count: usize) -> Vec<Cell> {
         let mut cells = vec![Cell::Closed(false); width * height];
         let mut random = thread_rng();
-        (0..mines_count).for_each(|_| {
+        (0..=mines_count).for_each(|_| {
             let x = random.gen_range(0..width);
             let y = random.gen_range(0..height);
             println!("Generated x {} y {}", x, y);
