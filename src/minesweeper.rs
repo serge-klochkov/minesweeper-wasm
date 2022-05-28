@@ -37,16 +37,19 @@ impl Minesweeper {
         self
     }
 
-    pub fn toggle_flag(&mut self, pos: Position) {
+    /// returns true if flag was placed, false if removed
+    pub fn toggle_flag(&mut self, pos: Position) -> bool {
         let idx = self.get_index(&pos);
         match self.cells[idx] {
-            Cell::Open(_) => {}
-            Cell::RevealedMine => {}
+            Cell::Open(_) => false,
+            Cell::RevealedMine => false,
             Cell::Flagged(has_mine) => {
-                self.cells[idx] = Cell::Closed(has_mine)
+                self.cells[idx] = Cell::Closed(has_mine);
+                false
             }
             Cell::Closed(has_mine) => {
-                self.cells[idx] = Cell::Flagged(has_mine)
+                self.cells[idx] = Cell::Flagged(has_mine);
+                true
             }
         }
     }

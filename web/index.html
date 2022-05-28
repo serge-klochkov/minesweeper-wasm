@@ -25,7 +25,7 @@
     <button id="restart">Restart</button>
 </div>
 <script type="module">
-    import init, {getCells, getWidth, getHeight, openCell, restart} from "../pkg/minesweeper_wasm.js"
+    import init, {getCells, getWidth, getHeight, openCell, restart, toggleFlag} from "../pkg/minesweeper_wasm.js"
 
     (async () => {
         await init()
@@ -54,6 +54,14 @@
                     }
                     console.log("Open", x, y)
                     gameIsFinished = openCell(x, y)
+                    render(getCells(), width, height)
+                })
+                element.addEventListener("contextmenu", (event) => {
+                    event.preventDefault()
+                    if (gameIsFinished) {
+                        return
+                    }
+                    toggleFlag(x, y)
                     render(getCells(), width, height)
                 })
                 root.appendChild(element)
