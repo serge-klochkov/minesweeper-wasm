@@ -1,0 +1,2 @@
+mod minesweeper;
+mod wasm;

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Minesweeper</title>
+    <style>
+        body {
+            font-size: 200%;
+            font-family: "Segoe-UI", Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .cell {
+            text-decoration: none;
+            text-align: center;
+        }
+
+        #root {
+            display: inline-grid;
+        }
+    </style>
+</head>
+<body>
+<div id="root"></div>
+<div id="footer">
+    <button id="restart">Restart</button>
+</div>
+<script type="module">
+    import init, {getCells, getWidth, getHeight, openCell, restart} from "../pkg/minesweeper_wasm.js"
+
+    (async () => {
+        await init()
+        const width = getWidth()
+        const height = getHeight()
+        initElements(width, height)
+        render(getCells(), width, height)
+    })()
+
+    let gameIsFinished = false
+
+    function initElements(width, height) {
+        let root = document.getElementById("root")
+        root.style.gridTemplate = `repeat(${width}, 1fr) / repeat(${height}, 1fr)`
+        for (let x = 0; x < width; x++) {
+            for (let y = 0; y < height; y++) {
+                const element = document.createElement("a")
+                element.classList.add("cell")
+                element.href = "#"
+                element.id = `${x}-${y}`
+                element.innerText = "🟩 "
+                element.addEventListener("click", (event) => {
+                    event.preventDefault()
+                    if (gameIsFinished) {
+                        return
+                    }
+                    console.log("Open", x, y)
+                    gameIsFinished = openCell(x, y)
+                    render(getCells(), width, height)
+                })
+                root.appendChild(element)
+            }
+        }
+        document.getElementById("restart").addEventListener("click", (event) => {
+            event.preventDefault()
+            gameIsFinished = false
+            restart()
+            render(getCells(), width, height)
+        })
+    }
+
+    function render(cells, width, height) {
+        for (let x = 0; x < width; x++) {
+            for (let y = 0; y < height; y++) {
+                const element = document.getElementById(`${x}-${y}`)
+                const cell = parseInt(cells[x * width + y])
+                if (cell === 0) {
+                    element.innerText = "🟩 "
+                } else if (cell === 10) {
+                    element.innerText = "🚩 "
+                } else if (cell === 30) {
+                    element.innerText = "💣 "
+                } else {
+                    element.innerText = (cell - 20).toString()
+                }
+            }
+        }
+    }
+</script>
+</body>
+</html>
